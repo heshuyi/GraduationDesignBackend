@@ -1,4 +1,5 @@
 // 获取账号密码
+const { log } = require('console');
 var dbConfig = require('./dbConfig');
 var getTelPassword = (req, res) => {
   console.log(1);
@@ -43,21 +44,22 @@ var getTelPassword = (req, res) => {
 var makeNewUser = function (req, res) {
   var flag = false;//标记没注册
   var userInformation = req.body;
-  console.log(userInformation);
+  // console.log(userInformation);
   console.log(userInformation.tel);
   var sql1 = `select tel from theuserinformation where tel=?`
   var sqlArr1 = [userInformation.tel]
-  var callBack1 = function (err, data) {
+  var sqlTelExist = function (err, data) {
     if (err) {
       console.log(err);
     } else {
-      if (!data[0]) {
+      console.log(data, data[0]);
+      if (data[0]) {
         flag = true
         console.log(flag);
       }
     }
   }
-  dbConfig.sqlConnect(sql1, sqlArr1, callBack1)
+  dbConfig.sqlConnect(sql1, sqlArr1, sqlTelExist)
   var sqladd = `insert into theuserinformation values(
     ${userInformation.tel},
     '${userInformation.name}',
@@ -70,16 +72,18 @@ var makeNewUser = function (req, res) {
   var sqladdArr = []
   var callback2 = function (err, data) {
     if (err) {
-      console.log(err);
+      res.send({
+        status: 3,
+        msg: '创建失败请重试' + err
+      })
     } else {
-      console.log(data);
       res.send({
         status: 1,
         msg: '成功'
       })
     }
   }
-  if (flag == true) {
+  if (flag == false) {
     dbConfig.sqlConnect(sqladd, sqladdArr, callback2)
   } else {
     res.send({
