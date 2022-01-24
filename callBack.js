@@ -1,69 +1,57 @@
-// 获取账号密码
-const { log } = require('console');
 var dbConfig = require('./dbConfig');
+// 获取账号密码
 var getTelPassword = (req, res) => {
-  console.log(1);
-  var account = req.body.account
+  var tel = req.body.tel//账号
   var password = req.body.password
-  var sqlArr = [account]
-  // console.log(sqlArr);
+  var sqlArr = [tel]
   var sql = `select password from theuserinformation where tel=?`
-  var callback = function (err, data) {
+  var getTel = function (err, data) {
     if (err) {
       console.log(err);
     } else {
-      data = data[0]
-      if (data) {
-        if (password == data.password) {
+      if (data.length > 0) {
+        if (data[0].password == password) {
           res.send({
             status: 1,
-            msg: '成功',
-            data: data
+            msg: '成功'
           })
-        } else if (password != data.password && data.password) {
+        } else {
           res.send({
             status: 2,
-            msg: '密码错误',
-            data: data
+            msg: '密码错误'
           })
         }
       } else {
-        {
-          res.send({
-            status: 3,
-            msg: '账号不存在',
-            data: data
-          })
-        }
+        res.send({
+          status: 3,
+          msg: '账号不存在'
+        })
       }
     }
   }
-  dbConfig.sqlConnect(sql, sqlArr, callback)
+  dbConfig.sqlConnect(sql, sqlArr, getTel)
 }
 //  注册账号添加个人信息
 var makeNewUser = function (req, res) {
   var flag = false;//标记没注册
   var userInformation = req.body;
-  // console.log(userInformation);
-  console.log(userInformation.tel);
   var sql1 = `select tel from theuserinformation where tel=?`
   var sqlArr1 = [userInformation.tel]
+  //查找电话号是否存在
   var sqlTelExist = function (err, data) {
     if (err) {
       console.log(err);
     } else {
-      console.log(data, data[0]);
-      if (data[0]) {
+      if (data.length > 0) {
         flag = true
-        console.log(flag);
       }
     }
   }
   dbConfig.sqlConnect(sql1, sqlArr1, sqlTelExist)
   var sqladd = `insert into theuserinformation values(
     ${userInformation.tel},
-    '${userInformation.name}',
     '${userInformation.password}',
+    '${userInformation.name}',
     '${userInformation.province}',
     '${userInformation.city}',
     '${userInformation.county}',
