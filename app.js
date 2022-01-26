@@ -1,4 +1,5 @@
 //引入express 创建服务器
+const fs = require('fs')
 var express = require('express');
 var app = express();
 
