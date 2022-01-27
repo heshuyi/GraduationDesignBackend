@@ -9,6 +9,9 @@ var getTelPassword = (req, res) => {
     if (err) {
       console.log(err);
     } else {
+      if (data.affectedRows == 1) {
+        console.log(1111111111);
+      }
       if (data.length > 0) {
         if (data[0].password == password) {
           res.send({
