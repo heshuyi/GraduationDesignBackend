@@ -1,4 +1,9 @@
 var dbConfig = require('./dbConfig');
+var multer = require('multer')
+var moment = require('moment')
+const fs = require('fs');
+const { connect } = require('http2');
+const { config } = require('./dbConfig');
 // 获取账号密码
 var getTelPassword = (req, res) => {
   var tel = req.body.tel//账号
@@ -60,6 +65,7 @@ var makeNewUser = function (req, res) {
     '${userInformation.county}',
     '${userInformation.postalCode}',
     '${userInformation.addressDetail}')`
+
   var sqladdArr = []
   var callback2 = function (err, data) {
     if (err) {
@@ -102,8 +108,87 @@ var getMineInformation = function (req, res) {
   // }
   // dbConfig.sqlConnect(sql, sqlArr, callback)
 }
+var addGoods = function (req, res) {
+  var tel = req.body.tel
+  var goodsName = req.body.goodsname
+  var goodsText = req.body.goodstext
+  var goodsMoney = req.body.goodsmoney
+  var goodsid = moment().format('X')
+  var data = moment().format()
+  console.log(data);
+  // var dir_file = 'img/goods/' + tel + '-' + goodsid + '.' + req.file.mimetype.split('/')[1]
+  var dir_file = 'img/' + tel + '-' + goodsid + '.' + req.file.mimetype.split('/')[1]
+  // var filewhere1 = 'E:\\毕业设计/GraduationDesignFrontEnd/src/' + dir_file
+  var filewhere = 'http://localhost:3001/' + dir_file
+  var sql = `insert into sellgoodstable values(
+  '${goodsid}',
+  '${tel}',
+  '${goodsName}',
+  '${goodsText}',
+  '${goodsMoney}',
+  '${data}',
+  '${filewhere}'
+  )`
+  fs.readFile(req.file.path, function (err, data) {
+    if (err) {
+      console.log('Error');
+    } else {
+      console.log('dir_file', dir_file);
+      fs.writeFile('public/' + dir_file, data, function (err) {
+        console.log('写入时', err);
+        if (err) {
+          res.send({
+            code: 0,
+            msg: '上传错误重试1'
+          });
+          return
+        } else {
+          console.log('数据库');
+          dbConfig.sqlConnect(sql, [], function (err, data) {
+            if (err) {
+              console.log(err);
+              res.send({
+                code: 0,
+                msg: '上传错误重试2'
+              });
+            } else {
+              console.log(22222);
+              res.send({
+                code: 1,
+                msg: '上传成功',
+                img: filewhere
+              });
+            }
+          })
+        }
+      })
+    }
+  })
+
+}
+var getgoods = function (req, res) {
+  var tel = req.body.tel
+  sql = `select * from sellgoodstable where tel=?`
+  dbConfig.sqlConnect(sql, [tel], (err, data) => {
+    if (err) {
+      console.log(err);
+      res.send({
+        code: 0,
+        msg: '错误重试刷新'
+      })
+    } else {
+      res.send({
+        code: 1,
+        data: data,
+        msg: '成功'
+      })
+    }
+  })
+}
 module.exports = {
   getTelPassword,
   makeNewUser,
-  getMineInformation
+  getMineInformation,
+  addGoods,
+  getgoods
 }

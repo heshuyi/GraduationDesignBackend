@@ -10,6 +10,7 @@ const upload = multer({ dest: './uploads/' }).single('file')
 var bodyParser = require('body-parser');    //解析函数
 app.use(bodyParser.json());                 //json请求
 app.use(bodyParser.urlencoded({ extended: true }));       //表单请求
+app.use(express.static('public'));
 app.all('*', function (req, res, next) {
   res.header("Access-Control-Allow-Origin", req.headers.origin); //需要显示设置来源
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -38,28 +39,8 @@ app.post('/tologin', callbacks.getTelPassword)
 app.post('/registered', callbacks.makeNewUser)
 //我的主页 查看自己信息
 app.get('/getmine', callbacks.getMineInformation)
-app.post('/s', upload, function (req, res) {
-  var tel = req.body.tel
-
-  // console.log(req.file);
-  fs.readFile(req.file.path, function (err, data) {
-
-    if (err) {
-      console.log('Error');
-    } else {
-      var dir_file = 'img' + '/' + tel + '-' + moment().format('X') + '.' + req.file.mimetype.split('/')[1]
-      fs.writeFile(dir_file, data, function (err) {
-        var obj = {
-          msg: 'upload success',
-          filename: dir_file
-        }
-        console.log(obj);
-        res.send(JSON.stringify(obj));
-      })
-    }
-  })
-
-})
+app.post('/CreateSellOrder', upload, callbacks.addGoods)
+app.post('/getgoods', callbacks.getgoods)
 // 配置服务端口
 var server = app.listen(3001, function () {
   // var host = server.address().address;
