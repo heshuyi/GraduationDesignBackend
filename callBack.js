@@ -4,7 +4,8 @@ var moment = require('moment')
 const fs = require('fs');
 const { connect } = require('http2');
 const { config } = require('./dbConfig');
-// 获取账号密码
+const { send } = require('process');
+// 登录
 var getTelPassword = (req, res) => {
   var tel = req.body.tel//账号
   var password = req.body.password
@@ -108,6 +109,7 @@ var getMineInformation = function (req, res) {
   // }
   // dbConfig.sqlConnect(sql, sqlArr, callback)
 }
+//添加货物
 var addGoods = function (req, res) {
   var tel = req.body.tel
   var goodsName = req.body.goodsname
@@ -166,6 +168,7 @@ var addGoods = function (req, res) {
   })
 
 }
+//获取自己的货物
 var getgoods = function (req, res) {
   var tel = req.body.tel
   sql = `select * from sellgoodstable where tel=?`
@@ -185,10 +188,91 @@ var getgoods = function (req, res) {
     }
   })
 }
+// 商城货物
+var getsellgoods = function (req, res) {
+  let { search, tel } = req.body
+  var sqlsearch = `select * from sellgoodstable where tel <>? and goodsname=?`
+  var sqlarrsearch = [tel, search]
+  var sql = `select * from sellgoodstable where tel <>?`
+  var sqlarr = [tel]
+  if (search) {
+    console.log(1);
+    dbConfig.sqlConnect(sqlsearch, sqlarrsearch, (err, data) => {
+      if (err) {
+        res.send({
+          code: 0,
+          msg: '重试',
+          data: ''
+        })
+      } else {
+        res.send({
+          code: 1,
+          msg: '成功',
+          data: data
+        })
+      }
+    })
+  } else {
+
+    dbConfig.sqlConnect(sql, sqlarr, (err, data) => {
+
+      if (err) {
+        res.send({
+          code: 0,
+          msg: '重试',
+          data: ''
+        })
+      } else {
+        res.send({
+          code: 1,
+          msg: '成功',
+          data: data
+        })
+      }
+    })
+  }
+
+}
+// 添加到购物车
+var addtoshopcar = function (req, res) {
+  var { tel, goodsid } = req.body
+  console.log(tel, goodsid);
+  var sql = ` select * from shoppingcar where tel=? and goodsid=?`
+  var sqlarr = [tel, goodsid]
+  var sqlinsert = `insert into shoppingcar values('${tel}','${goodsid}')`
+  dbConfig.sqlConnect(sql, sqlarr, (err, data) => {
+    console.log(err, data);
+    if (err) {
+      res.send({
+        code: 0,
+        msg: err
+      })
+    }
+    if (err == null && data.length == 0) {
+      console.log(1);
+      dbConfig.sqlConnect(sqlinsert, [], (err, data) => {
+        console.log(err);
+        if (err) {
+          res.send({
+            msg: err,
+            code: 0
+          })
+        } else {
+          res.send({
+            msg: 'chenggong',
+            code: 1
+          })
+        }
+      })
+    }
+  })
+}
 module.exports = {
   getTelPassword,
   makeNewUser,
   getMineInformation,
   addGoods,
-  getgoods
+  getgoods,
+  getsellgoods,
+  addtoshopcar
 }

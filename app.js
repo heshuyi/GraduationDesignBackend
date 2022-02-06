@@ -22,7 +22,6 @@ app.all('*', function (req, res, next) {
 // 配置接口api
 app.get('/api11', function (req, res) {
   res.status(200)
-
   res.send(req.query)
 })
 
@@ -41,6 +40,8 @@ app.post('/registered', callbacks.makeNewUser)
 app.get('/getmine', callbacks.getMineInformation)
 app.post('/CreateSellOrder', upload, callbacks.addGoods)
 app.post('/getgoods', callbacks.getgoods)
+app.post('/getsellgoods', callbacks.getsellgoods)
+app.post('/addtoshopcar', callbacks.addtoshopcar)
 // 配置服务端口
 var server = app.listen(3001, function () {
   // var host = server.address().address;
