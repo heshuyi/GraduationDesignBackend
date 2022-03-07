@@ -264,6 +264,11 @@ var addtoshopcar = function (req, res) {
           })
         }
       })
+    } else {
+      res.send({
+        msg: '已经在购物车里面啦亲',
+        code: 0
+      })
     }
   })
 }

@@ -24,15 +24,11 @@ app.get('/api11', function (req, res) {
   res.status(200)
   res.send(req.query)
 })
-
 app.post('/api12', function (req, res) {
-
   // res.json(req.body)
-
 })
 //登录账号的
 var callbacks = require('./callBack');
-
 app.post('/tologin', callbacks.getTelPassword)
 // 注册
 app.post('/registered', callbacks.makeNewUser)
@@ -47,5 +43,4 @@ var server = app.listen(3001, function () {
   // var host = server.address().address;
   // var port = server.address().port;
   console.log('服务启动');
-
 })
