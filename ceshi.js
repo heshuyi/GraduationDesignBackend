@@ -10,7 +10,7 @@ let wsServer = new WebSocketServer({ port: 9999 })
 //socket代表一个客户端,不是所有客户端共享的，而是每个客户端都有一个socket
 wsServer.on('connection', function (socket) {
   //每一个socket都有一个唯一的ID属性
-  console.log(socket)
+  // console.log(socket)
   console.log('客户端连接成功')
   //监听对方发过来的消息
   var i = 1
