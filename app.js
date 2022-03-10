@@ -38,6 +38,7 @@ app.post('/CreateSellOrder', upload, callbacks.addGoods)
 app.post('/getgoods', callbacks.getgoods)
 app.post('/getsellgoods', callbacks.getsellgoods)
 app.post('/addtoshopcar', callbacks.addtoshopcar)
+app.post('/getAuctionList', callbacks.getAuctionList)
 // 配置服务端口
 var server = app.listen(3001, function () {
   // var host = server.address().address;

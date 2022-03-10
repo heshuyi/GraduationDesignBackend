@@ -272,6 +272,14 @@ var addtoshopcar = function (req, res) {
     }
   })
 }
+var getAuctionList = function (req, res) {
+  let { tel } = req.body
+  console.log(tel);
+  res.send({
+    msg: 1,
+    data: [1, 2, 3]
+  })
+}
 module.exports = {
   getTelPassword,
   makeNewUser,
@@ -279,5 +287,6 @@ module.exports = {
   addGoods,
   getgoods,
   getsellgoods,
-  addtoshopcar
+  addtoshopcar,
+  getAuctionList
 }
