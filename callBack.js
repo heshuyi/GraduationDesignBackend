@@ -280,6 +280,19 @@ var getAuctionList = function (req, res) {
     data: [1, 2, 3]
   })
 }
+var historySearch = function (req,res){
+  let {tel} = req.body
+  let sql = `select * from historysearch where tel=?`
+  let sqlArr = [tel]
+  dbConfig.sqlConnect(sql,sqlArr,(data,err)=>{
+    console.log(data,err)
+    res.send({
+      msg:123
+    })
+  })
+}
+
+
 module.exports = {
   getTelPassword,
   makeNewUser,
@@ -288,5 +301,6 @@ module.exports = {
   getgoods,
   getsellgoods,
   addtoshopcar,
-  getAuctionList
+  getAuctionList,
+  historySearch
 }
