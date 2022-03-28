@@ -284,11 +284,21 @@ var historySearch = function (req,res){
   let {tel} = req.body
   let sql = `select * from historysearch where tel=?`
   let sqlArr = [tel]
-  dbConfig.sqlConnect(sql,sqlArr,(data,err)=>{
-    console.log(data,err)
-    res.send({
-      msg:123
-    })
+  dbConfig.sqlConnect(sql,sqlArr,(err,data)=>{
+    if (err){
+      res.send({
+        data:[],
+        msg:err,
+        code:0
+      })
+    }else {
+      res.send({
+        data:data,
+        msg:'成功',
+        code:1
+      })
+    }
+
   })
 }
 
