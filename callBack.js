@@ -282,9 +282,13 @@ var getAuctionList = function (req, res) {
 }
 var historySearch = function (req,res){
   let {tel} = req.body
-  let sql = `select * from historysearch where tel=?`
+  let sql = `select * from historysearch where tel=? ORDER BY num DESC`
   let sqlArr = [tel]
   dbConfig.sqlConnect(sql,sqlArr,(err,data)=>{
+    console.log(data)
+    if (data.length>10){
+      data = data.slice(0,10)
+    }
     if (err){
       res.send({
         data:[],
@@ -301,6 +305,44 @@ var historySearch = function (req,res){
 
   })
 }
+let addHistoryValue = function (req,res){
+  let {tel,value,num} = req.body
+  console.log(num)
+  let sql = `insert into historysearch values(?,?,?,?)`
+  let sqlArr = [tel,value,num,'true']
+  dbConfig.sqlConnect(sql,sqlArr,(err,data)=>{
+    if (err){
+      res.send({
+        msg:err,
+        code:0
+      })
+    }else {
+      res.send({
+        msg:'success',
+        code:1
+      })
+    }
+
+  })
+}
+let delHistoryValue = function (req,res){
+  let {tel} = req.body
+  let sqlArr = [tel]
+  let sql = `DELETE FROM historysearch WHERE tel = ?`
+  dbConfig.sqlConnect(sql,sqlArr,(err,data)=>{
+    if (err){
+      res.send({
+        code:0,
+        msg:err
+      })
+    }else {
+      res.send({
+        code:1,
+        msg:'success'
+      })
+    }
+  })
+}
 
 
 module.exports = {
@@ -312,5 +354,7 @@ module.exports = {
   getsellgoods,
   addtoshopcar,
   getAuctionList,
-  historySearch
+  historySearch,
+  addHistoryValue,
+  delHistoryValue
 }
