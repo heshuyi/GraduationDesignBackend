@@ -239,7 +239,9 @@ var addtoshopcar = function (req, res) {
   console.log(tel, goodsid);
   var sql = ` select * from shoppingcar where tel=? and goodsid=?`
   var sqlarr = [tel, goodsid]
-  var sqlinsert = `insert into shoppingcar values('${tel}','${goodsid}')`
+  let newTime = moment().format('YYYY-MM-DD HH:mm:ss')
+  console.log(newTime)
+  var sqlinsert = `insert into shoppingcar values('${tel}','${goodsid}','${newTime}' )`
   dbConfig.sqlConnect(sql, sqlarr, (err, data) => {
     console.log(err, data);
     if (err) {
