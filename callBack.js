@@ -274,13 +274,31 @@ var addtoshopcar = function (req, res) {
     }
   })
 }
+// 获取购物车商品
 var getAuctionList = function (req, res) {
-  let { tel } = req.body
-  console.log(tel);
-  res.send({
-    msg: 1,
-    data: [1, 2, 3]
-  })
+  let { tel }  = req.body
+  console.log(tel)
+  let sql = `SELECT sellgoodstable.endtime,sellgoodstable.goodsid,sellgoodstable.goodsname,sellgoodstable.imgflie,sellgoodstable.money,sellgoodstable.tel,sellgoodstable.text
+             FROM shoppingcar,sellgoodstable
+             WHERE shoppingcar.tel=? AND shoppingcar.goodsid = sellgoodstable.goodsid`
+  let sqlArr = [tel]
+    dbConfig.sqlConnect(sql,sqlArr,(err,data)=>{
+      if (err){
+        console.log(err)
+        res.send({
+          code:0,
+          msg:err,
+          data:[]
+        })
+      }else{
+        console.log(2)
+        res.send({
+          code:1,
+          msg:'success',
+          data:data
+        })
+      }
+    })
 }
 var historySearch = function (req,res){
   let {tel} = req.body
