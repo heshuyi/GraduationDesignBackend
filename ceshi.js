@@ -1,5 +1,6 @@
 let express = require('express')
 let app = express()
+let dbConfig = require('./dbConfig');
 app.use(express.static(__dirname))
 //http服务器
 app.listen(3002, () => { console.log(11111); })
@@ -16,8 +17,9 @@ wsServer.on('connection', function (socket) {
   var i = 1
   socket.on('message', function (message) {
     console.log('接收到客户端的消息', message)
-
+    let sql = 'select * from '
     setInterval(() => {
+      dbConfig.sqlConnect()
       socket.send('服务器回应:' + message + i)
       i = i + 1
     }, 1000)
