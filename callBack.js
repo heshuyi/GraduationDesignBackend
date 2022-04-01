@@ -291,7 +291,6 @@ var getAuctionList = function (req, res) {
           data:[]
         })
       }else{
-        console.log(2)
         res.send({
           code:1,
           msg:'success',
@@ -363,7 +362,47 @@ let delHistoryValue = function (req,res){
     }
   })
 }
-
+let submitPrice = function (req,res) {
+  let {tel,money,goodsid} = req.body
+  console.log(tel,money,goodsid)
+  let sql = `insert into auctionpricelist values(?,?,?)`
+  let sqlArr = [goodsid,tel,money]
+  dbConfig.sqlConnect(sql,sqlArr,(err,data)=>{
+    // console.log(err,data)
+    if (err){
+      res.send({
+        code:0,
+        msg:'cuowu',
+      })
+    }else {
+      res.send({
+        code:1,
+        msg:'success'
+      })
+    }
+  })
+}
+//获取购物车自己给出的价格
+let getMyGoodsMoney = function (req,res){
+  let {tel} = req.body
+  let sql = 'select * from newestgoodsmoney where newTel = ?'
+  let sqlArr = [tel]
+  dbConfig.sqlConnect(sql,sqlArr,(err,data)=>{
+    if (err){
+      res.send({
+        code:0,
+        msg:'err',
+        data:[]
+      })
+    }else {
+      res.send({
+        code:1,
+        msg:'success',
+        data:data
+      })
+    }
+  })
+}
 
 module.exports = {
   getTelPassword,
@@ -376,5 +415,7 @@ module.exports = {
   getAuctionList,
   historySearch,
   addHistoryValue,
-  delHistoryValue
+  delHistoryValue,
+  submitPrice,
+  getMyGoodsMoney
 }

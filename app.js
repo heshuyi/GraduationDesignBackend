@@ -42,6 +42,8 @@ app.post('/getAuctionList', callbacks.getAuctionList)
 app.post('/historySearch',callbacks.historySearch)
 app.post('/addHistoryValue',callbacks.addHistoryValue)
 app.post('/delHistoryValue',callbacks.delHistoryValue)
+app.post('/submitPrice',callbacks.submitPrice)
+app.post('/getMyGoodsMoney',callbacks.getMyGoodsMoney)
 // 配置服务端口
 app.listen(3001, function () {
   // var host = server.address().address;
