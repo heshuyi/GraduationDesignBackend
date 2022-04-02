@@ -11,17 +11,23 @@ let wsServer = new WebSocketServer({ port: 9999 })
 //socket代表一个客户端,不是所有客户端共享的，而是每个客户端都有一个socket
 wsServer.on('connection', function (socket) {
   //每一个socket都有一个唯一的ID属性
-  // console.log(socket)
   console.log('客户端连接成功')
   //监听对方发过来的消息
   var i = 1
   socket.on('message', function (message) {
     console.log('接收到客户端的消息', message)
-    let sql = 'select * from '
+    let sql = `SELECT newestgoodsmoney.newGoodid,MIN(IF(newMoney>0,newMoney,(SELECT money FROM sellgoodstable WHERE sellgoodstable.goodsid=newGoodid))) as maxmoney FROM newestgoodsmoney GROUP BY newestgoodsmoney.newGoodid `
     setInterval(() => {
-      dbConfig.sqlConnect()
-      socket.send('服务器回应:' + message + i)
+        dbConfig.sqlConnect(sql,[],(err,data)=>{
+            console.log(err)
+        socket.send(
+            JSON.stringify({
+              data:data,
+              num:i
+            })
+            )
+      })
       i = i + 1
-    }, 1000)
+    }, 10)
   })
 })
