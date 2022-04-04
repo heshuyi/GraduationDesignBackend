@@ -28,6 +28,6 @@ wsServer.on('connection', function (socket) {
             )
       })
       i = i + 1
-    }, 10)
+    }, 10000)
   })
 })

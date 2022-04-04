@@ -16,12 +16,9 @@ module.exports.sqlConnect = (sql ,sqlArr,callback)=>{
       return
     }else {
       conn.query(sql,sqlArr,(err,data,fieled)=>{
-        if (err){
-          conn.release()
-        }else {
           callback(err,data)
           conn.release()
-        }
+
       })
     }
   })

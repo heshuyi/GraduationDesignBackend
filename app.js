@@ -45,6 +45,7 @@ app.post('/delHistoryValue',callbacks.delHistoryValue)
 app.post('/submitPrice',callbacks.submitPrice)
 app.post('/getMyGoodsMoney',callbacks.getMyGoodsMoney)
 app.post('/getAllGoodsMoney',callbacks.getAllGoodsMoney)
+// app.post('/ga',callbacks.ga)
 // 配置服务端口
 app.listen(3001, function () {
   // var host = server.address().address;

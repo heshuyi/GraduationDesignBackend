@@ -116,8 +116,10 @@ var addGoods = function (req, res) {
     var goodsText = req.body.goodstext
     var goodsMoney = req.body.goodsmoney
     var goodsid = moment().format('X')
-    var data = moment().format()
+    var data = moment().format('YYYY-MM-DD HH:mm:ss')
     console.log(data);
+    var endtime = moment().add(3,'days').format('YYYY-MM-DD HH:mm:ss')
+    console.log(endtime)
     // var dir_file = 'img/goods/' + tel + '-' + goodsid + '.' + req.file.mimetype.split('/')[1]
     var dir_file = 'img/' + tel + '-' + goodsid + '.' + req.file.mimetype.split('/')[1]
     // var filewhere1 = 'E:\\毕业设计/GraduationDesignFrontEnd/src/' + dir_file
@@ -129,7 +131,9 @@ var addGoods = function (req, res) {
   '${goodsText}',
   '${goodsMoney}',
   '${data}',
-  '${filewhere}'
+  '${filewhere}',
+  '1',
+  '${endtime}'
   )`
     fs.readFile(req.file.path, function (err, data) {
         if (err) {
@@ -362,18 +366,29 @@ let delHistoryValue = function (req, res) {
         }
     })
 }
+//拍商品出价
 let submitPrice = function (req, res) {
     let {tel, money, goodsid} = req.body
     console.log(tel, money, goodsid)
     let sql = `insert into auctionpricelist values(?,?,?)`
     let sqlArr = [goodsid, tel, money]
     dbConfig.sqlConnect(sql, sqlArr, (err, data) => {
-        // console.log(err,data)
         if (err) {
-            res.send({
-                code: 0,
-                msg: 'cuowu',
-            })
+            if (err.errno){
+                if (err.errno==1062){
+                    res.send({
+                        code: 0,
+                        msg: '已有相同价格请输入更高价格',
+                    })
+                }
+            }else {
+                res.send({
+                    code: 0,
+                    msg: '添加错误再试',
+                })
+            }
+
+
         } else {
             res.send({
                 code: 1,
@@ -437,5 +452,5 @@ module.exports = {
     delHistoryValue,
     submitPrice,
     getMyGoodsMoney,
-    getAllGoodsMoney
+    getAllGoodsMoney,
 }
