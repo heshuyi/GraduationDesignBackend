@@ -24,21 +24,4 @@ module.exports.sqlConnect = (sql ,sqlArr,callback)=>{
   })
 }
 
-  // 链接数据库连接池方式
-  // sqlConnect: function (sql, sqlArr, callback) {
-  //   var pool = mysql.createPool(this.config)
-  //   pool.getConnection((err, conn) => {
-  //     // console.log('123456');
-  //     if (err) {
-  //       console.log(err)
-  //       console.log('数据库连接失败');
-  //       return
-  //     }
-  //     // 事件驱动回调
-  //     conn.query(sql, sqlArr, (err,result,fields)=>{
-  //       callback(err,result)
-  //       conn.release();
-  //     });
-  //   })
-  // }
 
