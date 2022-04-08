@@ -194,6 +194,7 @@ var getgoods = function (req, res) {
 }
 // 商城货物
 var getsellgoods = function (req, res) {
+    console.log(12312312312)
     let {search, tel} = req.body
     var sqlsearch = `select * from sellgoodstable where tel <>? and goodsname=?`
     var sqlarrsearch = [tel, search]
