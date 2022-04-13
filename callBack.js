@@ -46,17 +46,6 @@ var makeNewUser = function (req, res) {
     var userInformation = req.body;
     var sql1 = `select tel from theuserinformation where tel=?`
     var sqlArr1 = [userInformation.tel]
-    //查找电话号是否存在
-    var sqlTelExist = function (err, data) {
-        if (err) {
-            console.log(err);
-        } else {
-            if (data.length > 0) {
-                flag = true
-            }
-        }
-    }
-    dbConfig.sqlConnect(sql1, sqlArr1, sqlTelExist)
     var sqladd = `insert into theuserinformation values(
     ${userInformation.tel},
     '${userInformation.password}',
@@ -65,8 +54,8 @@ var makeNewUser = function (req, res) {
     '${userInformation.city}',
     '${userInformation.county}',
     '${userInformation.postalCode}',
-    '${userInformation.addressDetail}')`
-
+    '${userInformation.addressDetail}',
+    '${userInformation.email}')`
     var sqladdArr = []
     var callback2 = function (err, data) {
         if (err) {
@@ -81,15 +70,22 @@ var makeNewUser = function (req, res) {
             })
         }
     }
-    if (flag == false) {
-        dbConfig.sqlConnect(sqladd, sqladdArr, callback2)
-    } else {
-        res.send({
-            status: 2,
-            msg: '已拥有'
-        })
+    //查找电话号是否存在
+    var sqlTelExist = function (err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            if (data.length > 0) {
+                res.send({
+                    status: 2,
+                    msg: '已拥有'
+                })
+            }else {
+                dbConfig.sqlConnect(sqladd, sqladdArr, callback2)
+            }
+        }
     }
-
+    dbConfig.sqlConnect(sql1, sqlArr1, sqlTelExist)
 }
 // 查看个人信息
 var getMineInformation = function (req, res) {
@@ -158,7 +154,6 @@ var addGoods = function (req, res) {
                                 msg: '上传错误重试2'
                             });
                         } else {
-                            console.log(22222);
                             res.send({
                                 code: 1,
                                 msg: '上传成功',
@@ -194,7 +189,6 @@ var getgoods = function (req, res) {
 }
 // 商城货物
 var getsellgoods = function (req, res) {
-    console.log(12312312312)
     let {search, tel} = req.body
     var sqlsearch = `select * from sellgoodstable where tel <>? and goodsname=?`
     var sqlarrsearch = [tel, search]
@@ -240,6 +234,7 @@ var getsellgoods = function (req, res) {
 }
 // 添加到购物车
 var addtoshopcar = function (req, res) {
+
     var {tel, goodsid} = req.body
     console.log(tel, goodsid);
     var sql = ` select * from shoppingcar where tel=? and goodsid=?`
@@ -266,7 +261,7 @@ var addtoshopcar = function (req, res) {
                     })
                 } else {
                     res.send({
-                        msg: 'chenggong',
+                        msg: '成功',
                         code: 1
                     })
                 }
